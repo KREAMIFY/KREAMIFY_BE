@@ -24,21 +24,20 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             # 1. AWS ECR 로그인
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin AWS_ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-            
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
             # 2. 기존 컨테이너 정지 및 삭제 (이미 실행 중이라면)
             docker stop kreamify-container || true
             docker rm kreamify-container || true
-            docker rmi AWS_ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest || true
-            
+            docker rmi ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest || true
+
             # 3. Docker 이미지 빌드
             docker build -t kreamify .
-            
-            # 4. ECR에 태그 추가 및 Push
-            docker tag kreamify:latest AWS_ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest
-            docker push AWS_ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest
-            
-            # 5. 최신 Docker 이미지 Pull 및 실행
-            docker pull AWS_ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest
-            docker run -d --name kreamify-container -p 8080:8080 AWS_ACCOUNT_ID.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest
 
+            # 4. ECR에 태그 추가 및 Push
+            docker tag kreamify:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest
+            docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest
+
+            # 5. 최신 Docker 이미지 Pull 및 실행
+            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest
+            docker run -d --name kreamify-container -p 8080:8080 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/kreamify:latest
