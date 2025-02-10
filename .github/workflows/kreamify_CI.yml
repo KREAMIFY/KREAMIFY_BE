@@ -1,8 +1,6 @@
 name: KREAMIFY CI/CD
 
 on:
-  push:
-    branches: [ "develop" ]  # develop 브랜치에 push될 때 실행
   pull_request:
     branches: [ "develop" ]  # develop 브랜치에 PR 할 때 실행
 jobs:
