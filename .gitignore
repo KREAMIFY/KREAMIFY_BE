@@ -233,3 +233,4 @@ application-local.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,intellij+all,git,java,gradle,netbeans
 
+/src/main/resources/images/
