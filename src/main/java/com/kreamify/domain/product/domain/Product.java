@@ -1,5 +1,6 @@
 package com.kreamify.domain.product.domain;
 
+import com.kreamify.domain.product.dto.ProductRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -81,6 +82,16 @@ public class Product {
     // Product 객체에 상품 옵션을 추가
     public void addOption(String option) {
         this.options.add(buildProductOption(option));
+    }
+
+    public void changeProductInfo(ProductRequest productRequest) {
+        this.brand = productRequest.getBrand();
+        this.englishName = productRequest.getEnglishName();
+        this.koreanName = productRequest.getKoreanName();
+        this.modelNumber = productRequest.getModelNumber();
+        this.color = productRequest.getColor();
+        this.releaseDate = productRequest.getReleaseDate();
+        this.releasePrice = productRequest.getReleasePrice();
     }
 
     // ProductOption의 빌더 객체를 생성
