@@ -1,4 +1,4 @@
-package com.kreamify.global.exception;
+package com.kreamify.global.error.exception;
 
 
 import com.kreamify.global.error.ErrorCode;
