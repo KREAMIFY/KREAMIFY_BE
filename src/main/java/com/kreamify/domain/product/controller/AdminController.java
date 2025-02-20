@@ -1,6 +1,7 @@
 package com.kreamify.domain.product.controller;
 
 import com.kreamify.domain.product.dto.ProductRequest;
+import com.kreamify.domain.product.dto.ProductsResponse;
 import com.kreamify.domain.product.service.ProductService;
 import com.kreamify.global.response.ApiResponse;
 import com.kreamify.global.service.S3Uploader;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/products")
@@ -22,6 +24,13 @@ public class AdminController {
 
     private final S3Uploader s3Uploader;
     private final ProductService productService;
+
+    @Operation(summary = "상품 리스트 조회",
+            description = "특정 조건에 맞는 상품들을 조회할 수 있습니다.")
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<ProductsResponse>>> getProducts() {
+        return ResponseEntity.ok(ApiResponse.of(productService.getProducts()));
+    }
 
     @Operation(summary = "상품 등록",
             description = "이미지와 함께 상품을 등록할 수 있습니다.")
