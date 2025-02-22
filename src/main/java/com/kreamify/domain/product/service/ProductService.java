@@ -1,7 +1,9 @@
 package com.kreamify.domain.product.service;
 
 import com.kreamify.domain.product.domain.Product;
+import com.kreamify.domain.product.domain.ProductOption;
 import com.kreamify.domain.product.dto.ProductRequest;
+import com.kreamify.domain.product.dto.ProductsResponse;
 import com.kreamify.domain.product.exception.NotFoundProductException;
 import com.kreamify.domain.product.repository.ProductOptionRepository;
 import com.kreamify.domain.product.repository.ProductRepository;
@@ -10,14 +12,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 //상품 등록 로직을 구현하는 서비스 계층
 public class ProductService {
 
+    private static final int NO_BID = 0;
+    private static final int ZERO = 0;
+
     //리포지토리를 통해 실제 데이터베이스에 상품 데이터를 저장
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
+
+    @Transactional(readOnly = true)
+    public List<ProductsResponse> getProducts() {
+        return productRepository
+                .findAllByIsDeletedFalse()
+                .stream()
+                .map(this::toProductResponse)
+                .toList();
+    }
 
     @Transactional
     public Long registerProduct(ProductRequest productRequest) {
@@ -44,7 +61,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Product findActiveProduct(Long id) {
-        return productRepository.findByIdAndIsDeleted(id, false)
+        return productRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundProductException(ErrorCode.NOT_FOUND_RESOURCE));
     }
 
@@ -55,4 +72,21 @@ public class ProductService {
         }
     }
 
+    private ProductsResponse toProductResponse(Product product) {
+        Optional<ProductOption> optLowestPrice = productOptionRepository
+                .findFirstByProductAndLowestPriceNotOrderByLowestPrice(product, ZERO);
+
+        Optional<ProductOption> optHighestPrice = productOptionRepository
+                .findFirstByProductOrderByHighestPriceDesc(product);
+
+        int lowestPrice = optLowestPrice.isEmpty() ? NO_BID : optLowestPrice
+                .get()
+                .getLowestPrice();
+
+        int highestPrice = optHighestPrice.isEmpty() ? NO_BID : optHighestPrice
+                .get()
+                .getHighestPrice();
+
+        return new ProductsResponse(product, lowestPrice, highestPrice);
+    }
 }
