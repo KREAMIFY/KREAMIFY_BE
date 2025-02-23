@@ -1,6 +1,7 @@
 package com.kreamify.domain.product.controller;
 
 import com.kreamify.domain.product.dto.ProductRequest;
+import com.kreamify.domain.product.dto.ProductResponse;
 import com.kreamify.domain.product.dto.ProductsResponse;
 import com.kreamify.domain.product.service.ProductService;
 import com.kreamify.global.response.ApiResponse;
@@ -30,6 +31,13 @@ public class AdminController {
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<ProductsResponse>>> getProducts() {
         return ResponseEntity.ok(ApiResponse.of(productService.getProducts()));
+    }
+
+    @Operation(summary = "특정 상품 조회",
+            description = "특정 상품의 기본 정보를 조회할 수 있습니다.")
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ProductResponse>> getProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.of(productService.getProduct(id)));
     }
 
     @Operation(summary = "상품 등록",
