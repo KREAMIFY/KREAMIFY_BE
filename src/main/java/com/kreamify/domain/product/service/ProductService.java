@@ -2,7 +2,9 @@ package com.kreamify.domain.product.service;
 
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.product.domain.ProductOption;
+import com.kreamify.domain.product.dto.OptionResponse;
 import com.kreamify.domain.product.dto.ProductRequest;
+import com.kreamify.domain.product.dto.ProductResponse;
 import com.kreamify.domain.product.dto.ProductsResponse;
 import com.kreamify.domain.product.exception.NotFoundProductException;
 import com.kreamify.domain.product.repository.ProductOptionRepository;
@@ -26,6 +28,24 @@ public class ProductService {
     //리포지토리를 통해 실제 데이터베이스에 상품 데이터를 저장
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
+
+    @Transactional(readOnly = true)
+    public ProductResponse getProduct(Long id) {
+        Product product = findActiveProduct(id);
+
+        return new ProductResponse(
+                product,
+                productOptionRepository
+                        .findByProduct(product)
+                        .stream()
+                        .map(productOption -> new OptionResponse(
+                                productOption.getSize(),
+                                productOption.getLowestPrice(),
+                                productOption.getHighestPrice()
+                        ))
+                        .toList()
+        );
+    }
 
     @Transactional(readOnly = true)
     public List<ProductsResponse> getProducts() {
