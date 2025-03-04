@@ -9,6 +9,7 @@ import com.kreamify.global.service.S3Uploader;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,4 +64,13 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.of(productService.modifyProduct(id, productRequest)));
     }
 
+    @Operation(summary = "상품 삭제",
+            description = "상품을 삭제할 수 있습니다")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Long>> removeProduct(
+            @PathVariable Long id
+    ) {
+        productService.removeProduct(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

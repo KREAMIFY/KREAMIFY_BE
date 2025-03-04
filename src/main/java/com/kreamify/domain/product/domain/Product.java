@@ -94,6 +94,10 @@ public class Product {
         this.releasePrice = productRequest.getReleasePrice();
     }
 
+    public void deleteProduct() {
+        this.isDeleted = true;
+    }
+
     // ProductOption의 빌더 객체를 생성
     private ProductOption buildProductOption(String option) {
         return ProductOption
