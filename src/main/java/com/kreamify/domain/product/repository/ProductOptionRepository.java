@@ -19,4 +19,7 @@ public interface ProductOptionRepository extends JpaRepository<ProductOption, Lo
     Optional<ProductOption> findFirstByProductOrderByHighestPriceDesc(Product product);
 
     Optional<ProductOption> findByProductAndSize(Product product, String size);
+
+    List<ProductOption> findByProduct(Product product);
+
 }
