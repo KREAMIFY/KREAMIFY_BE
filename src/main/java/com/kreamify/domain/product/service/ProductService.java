@@ -124,6 +124,13 @@ public class ProductService {
         return product.getId();
     }
 
+    // removeProduct()
+    @Transactional
+    public void removeProduct(Long id) {
+        Product product = findActiveProduct(id);
+        product.deleteProduct();
+    }
+
     @Transactional(readOnly = true)
     public Product findActiveProduct(Long id) {
         return productRepository.findByIdAndIsDeletedFalse(id)
