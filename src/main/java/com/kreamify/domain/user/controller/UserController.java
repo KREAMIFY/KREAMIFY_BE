@@ -1,6 +1,7 @@
 package com.kreamify.domain.user.controller;
 
 
+import com.kreamify.domain.user.dto.UserResponse;
 import com.kreamify.domain.user.dto.UserSignUpRequest;
 import com.kreamify.domain.user.dto.UserUpdateRequest;
 import com.kreamify.domain.user.service.UserService;
@@ -39,6 +40,13 @@ public class UserController {
             @RequestBody UserUpdateRequest userUpdateRequest
     ) {
         return ResponseEntity.ok(ApiResponse.of(userService.updateUser(id,userUpdateRequest)));
+    }
+
+    //회원 정보 조회
+    @Operation(summary = "회원조회",description = "회원 ID로 회원 조회")
+    @GetMapping("/{id}")
+    public  ResponseEntity<ApiResponse<UserResponse>> findUser(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.of(userService.findUser(id)));
     }
 
 

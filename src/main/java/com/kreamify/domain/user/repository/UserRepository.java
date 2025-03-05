@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByIdAndIsDeleted(Long id,boolean isDeleted); //쿼리 메서드
+    Optional<User> findByIdAndIsDeletedFalse(Long id); //쿼리 메서드
     boolean existsUserByEmail(String email); //툭종 아매알울 거잔 서용자가 DB에 존재하는지 여부를 확인
 }
 /*

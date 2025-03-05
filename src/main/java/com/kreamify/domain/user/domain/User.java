@@ -1,6 +1,7 @@
 package com.kreamify.domain.user.domain;
 
 
+import com.kreamify.domain.user.dto.UserResponse;
 import com.kreamify.domain.user.dto.UserUpdateRequest;
 import com.kreamify.domain.user.exception.InvalidArgumentException;
 import com.kreamify.global.error.ErrorCode;
@@ -15,7 +16,7 @@ import lombok.Getter;
 import java.util.Arrays;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 
 public class User {
@@ -77,8 +78,21 @@ public class User {
             case EMAIL -> this.email = userUpdateRequest.getValue();
             case PHONE -> this.phone = userUpdateRequest.getValue();
             case SIZE -> this.size = userUpdateRequest.getValue();
+            case ADDRESS -> this.address = userUpdateRequest.getValue();
 
         }
+    }
+    //회원 정보 조회
+    public UserResponse toResponse() {
+        return UserResponse
+                .builder()
+                .id(id)
+                .nickname(nickname)
+                .email(email)
+                .phone(phone)
+                .size(size)
+                .address(address)
+                .build();
     }
 
     //사용자의 정보를 수정할때 변경 가능한 항목만
