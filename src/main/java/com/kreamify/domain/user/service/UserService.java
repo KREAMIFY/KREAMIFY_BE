@@ -1,6 +1,7 @@
 package com.kreamify.domain.user.service;
 
 import com.kreamify.domain.user.domain.User;
+import com.kreamify.domain.user.dto.UserResponse;
 import com.kreamify.domain.user.dto.UserSignUpRequest;
 import com.kreamify.domain.user.dto.UserUpdateRequest;
 import com.kreamify.domain.user.exception.DuplicateUserException;
@@ -16,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     public UserService(UserRepository userRepository) {
+
         this.userRepository = userRepository;
     }
+
     //회원가입
     @Transactional
     public Long saveUser(UserSignUpRequest userSignUpRequest) {
@@ -27,6 +30,7 @@ public class UserService {
                 .getId();
 
     }
+
     //회원 정보 수정
     @Transactional
     public Long updateUser(Long id,UserUpdateRequest userUpdateRequest) {
@@ -37,9 +41,17 @@ public class UserService {
 
     }
 
+    //회원 조회
+    @Transactional(readOnly = true)
+    public UserResponse findUser(Long id){
+        return findActiveUser(id).toResponse();
+    }
+
+
+    @Transactional(readOnly = true)
     public User findActiveUser(Long id){
         return userRepository
-                .findByIdAndIsDeleted(id,false)
+                .findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_RESOURCE));
     }
 
