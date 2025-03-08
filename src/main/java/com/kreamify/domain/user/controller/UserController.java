@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 public class UserController {
     private final UserService userService;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -47,6 +48,13 @@ public class UserController {
     @GetMapping("/{id}")
     public  ResponseEntity<ApiResponse<UserResponse>> findUser(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.of(userService.findUser(id)));
+    }
+
+    //회원 삭제
+    @Operation(summary = "회원삭제",description = "회원 ID로 회원 삭제")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Long>> deleteUser(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.of(userService.deleteUser(id)));
     }
 
 

@@ -47,6 +47,15 @@ public class UserService {
         return findActiveUser(id).toResponse();
     }
 
+    //회원 삭제
+    @Transactional
+    public Long deleteUser(Long id){
+        User user = findActiveUser(id);
+        user.deleteUser();
+
+        return user.getId();
+
+    }
 
     @Transactional(readOnly = true)
     public User findActiveUser(Long id){
@@ -54,7 +63,6 @@ public class UserService {
                 .findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundUserException(ErrorCode.NOT_FOUND_RESOURCE));
     }
-
     //이미 존재하는 User 경우
     private void validateDuplicateUser(UserSignUpRequest userSignUpRequest) {
         if (userRepository.existsUserByEmail(
@@ -63,6 +71,7 @@ public class UserService {
             throw new DuplicateUserException(ErrorCode.CONFLICT_ERROR);
         }
     }
+
 
 
 

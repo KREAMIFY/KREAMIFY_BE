@@ -118,9 +118,10 @@ public class User {
                     .orElseThrow(() -> new InvalidArgumentException(ErrorCode.INVALID_INPUT));
         }
 
-
-
-
+    }
+    //회원 삭제
+    public void deleteUser() {
+        this.isDeleted = true;
     }
 
 
