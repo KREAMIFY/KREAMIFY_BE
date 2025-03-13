@@ -110,7 +110,7 @@ public class User {
             this.option = option;
         }
 
-        public static UpdateInfo getUpdateOption(String input){
+        static UpdateInfo getUpdateOption(String input){
             return Arrays
                     .stream(UpdateInfo.values())
                     .filter(u -> u.option.equals(input))
