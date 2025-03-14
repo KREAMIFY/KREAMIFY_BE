@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     public UserService(UserRepository userRepository) {
-
         this.userRepository = userRepository;
     }
 
@@ -57,7 +56,6 @@ public class UserService {
 
     }
 
-    @Transactional(readOnly = true)
     public User findActiveUser(Long id){
         return userRepository
                 .findByIdAndIsDeletedFalse(id)
