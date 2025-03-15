@@ -26,9 +26,8 @@ public class BuyingService {
     public BidResponse registerBuyingBid(Long id, String size, BidRequest bidRequest) {
         ProductOption productOption = productService.findProductOptionByProductIdAndSize(id, size);
 
-        if (productOption.getLowestPrice() > bidRequest.price()
-                || productOption.getLowestPrice() == 0) {
-            productOption.updateBuyLowestPrice(bidRequest.price());
+        if (productOption.getHighestPrice() < bidRequest.price()) {
+            productOption.updateSellHighestPrice(bidRequest.price());
         }
 
         User user = userService.findActiveUser(bidRequest.userId());
