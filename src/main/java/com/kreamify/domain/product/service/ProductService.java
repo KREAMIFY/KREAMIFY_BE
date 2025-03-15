@@ -132,6 +132,13 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
+    public ProductOption findProductOptionByProductIdAndSize(Long id, String size) {
+        return productOptionRepository
+                .findByProductAndSize(findActiveProduct(id), size)
+                .orElseThrow(() -> new NotFoundProductException(ErrorCode.NOT_FOUND_RESOURCE));
+    }
+
+    @Transactional(readOnly = true)
     public Product findActiveProduct(Long id) {
         return productRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NotFoundProductException(ErrorCode.NOT_FOUND_RESOURCE));

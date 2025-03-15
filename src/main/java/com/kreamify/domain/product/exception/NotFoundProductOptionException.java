@@ -3,9 +3,10 @@ package com.kreamify.domain.product.exception;
 import com.kreamify.global.error.ErrorCode;
 import com.kreamify.global.error.exception.NotFoundException;
 
-public class NotFoundProductException extends NotFoundException {
+public class NotFoundProductOptionException extends NotFoundException {
 
-    public NotFoundProductException(ErrorCode errorCode) {
+    public NotFoundProductOptionException(ErrorCode errorCode) {
         super(errorCode);
     }
+
 }
