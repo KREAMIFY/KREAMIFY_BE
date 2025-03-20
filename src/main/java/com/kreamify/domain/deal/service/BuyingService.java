@@ -27,7 +27,7 @@ public class BuyingService {
         ProductOption productOption = productService.findProductOptionByProductIdAndSize(id, size);
 
         if (productOption.getHighestPrice() < bidRequest.price()) {
-            productOption.updateSellHighestPrice(bidRequest.price());
+            productOption.updateSellBidPrice(bidRequest.price());
         }
 
         User user = userService.findActiveUser(bidRequest.userId());

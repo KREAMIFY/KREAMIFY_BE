@@ -1,11 +1,15 @@
 package com.kreamify.domain.deal.domain;
 
+import com.kreamify.domain.deal.dto.BidRequest;
+import com.kreamify.domain.deal.dto.BidResponse;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.user.domain.User;
 import com.kreamify.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Entity
@@ -55,6 +59,22 @@ public class SellingBid extends BaseEntity {
         this.size = size;
         this.suggestPrice = suggestPrice;
         this.deadline = deadline;
+    }
+
+    public void updateSellingBid(int price, int deadline) {
+        this.suggestPrice = price;
+        this.deadline = deadline;
+    }
+
+    public BidResponse toBidResponse(BidRequest bidRequest) {
+        return new BidResponse(
+                suggestPrice,
+                deadline,
+                this
+                        .getCreatedDate()
+                        .plusDays(bidRequest.deadline())
+                        .format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+        );
     }
 
 }
