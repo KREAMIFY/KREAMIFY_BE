@@ -3,7 +3,7 @@ package com.kreamify.domain.deal.service;
 import com.kreamify.domain.deal.domain.SellingBid;
 import com.kreamify.domain.deal.dto.BidRequest;
 import com.kreamify.domain.deal.dto.BidResponse;
-import com.kreamify.domain.deal.exception.NotFoundBidExcepiton;
+import com.kreamify.domain.deal.exception.NotFoundBidException;
 import com.kreamify.domain.deal.repository.SellingRepository;
 import com.kreamify.domain.product.domain.ProductOption;
 import com.kreamify.domain.product.service.ProductService;
@@ -63,7 +63,7 @@ public class SellingService {
                         productService.findActiveProduct(productId),
                         size)
 
-                .orElseThrow(() -> new NotFoundBidExcepiton(ErrorCode.NOT_FOUND_RESOURCE));
+                .orElseThrow(() -> new NotFoundBidException(ErrorCode.NOT_FOUND_RESOURCE));
     }
 
     public boolean existsSameBid(Long productId, String size, Long userId) {
