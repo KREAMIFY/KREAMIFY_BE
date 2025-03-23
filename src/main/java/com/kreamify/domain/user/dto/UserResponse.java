@@ -1,7 +1,9 @@
 package com.kreamify.domain.user.dto;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class UserResponse {
     private Long id;
     private String nickname;
