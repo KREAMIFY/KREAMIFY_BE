@@ -193,7 +193,7 @@ class UserControllerTest {
     @Test
     void updateUserTest() throws Exception {
 
-        Long userId = 2L;
+        Long userId = 1L;
         // given
         String option = "nickname";
         String value = "test4";
@@ -265,7 +265,7 @@ class UserControllerTest {
     @DisplayName("회원정보수정옵션에러테스트")
     @Test
     void updateUserMethodInvalidOptionExceptionTest() throws Exception {
-        Long userId = 2L;
+        Long userId = 1L;
         // given
         String option = "Invalid Option";
         String value = "updatedNickname";
