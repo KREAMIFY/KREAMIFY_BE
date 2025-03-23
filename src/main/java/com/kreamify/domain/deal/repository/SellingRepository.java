@@ -14,6 +14,7 @@ public interface SellingRepository extends JpaRepository<SellingBid, Long> {
 
     Optional<SellingBid> findByUserAndProductAndSize(User user, Product product, String size);
 
+    boolean existsByUserAndProductAndSize(User user, Product product, String size);
     // 상품의 각 사이즈별 판매 입찰 내역 조회
     @Query(
             value =

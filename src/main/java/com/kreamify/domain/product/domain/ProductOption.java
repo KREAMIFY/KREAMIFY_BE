@@ -42,11 +42,11 @@ public class ProductOption {
         this.size = size;
     }
 
-    public void updateBuyLowestPrice(int price) {
+    public void updateBuyLBidPrice(int price) {
         this.lowestPrice = price;
     }
 
-    public void updateSellHighestPrice(int price) {
+    public void updateSellBidPrice(int price) {
         this.highestPrice = price;
     }
 
