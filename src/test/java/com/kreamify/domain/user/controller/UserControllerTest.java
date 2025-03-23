@@ -48,7 +48,7 @@ class UserControllerTest {
 
     @BeforeAll
     void setUp() throws Exception{
-        //첫번째 사용자
+        //첫번째 사용자(조회 데이터)
         UserSignUpTestRequest userSignUpRequest1 = new UserSignUpTestRequest(
                 "test1",
                 "test1@email.com",
@@ -61,7 +61,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSignUpRequest1))
         ).andExpect(status().isOk());
-        //두번째 사용자
+        //두번째 사용자(탈퇴 데이터)
         UserSignUpTestRequest userSignUpRequest2 = new UserSignUpTestRequest(
                 "test3",
                 "test3@test.com",
@@ -109,7 +109,7 @@ class UserControllerTest {
                 .andDo(print());
     }
 
-    @DisplayName("회원생성중복테스트")
+    @DisplayName("사용자 생성 중복테스트")
     @Test
     void saveUserMethodDuplicateExceptionTest() throws Exception {
         String nickname = "test1";
@@ -148,11 +148,11 @@ class UserControllerTest {
                 );
     }
 
-    @DisplayName("회원생성_예외_테스트")
+    @DisplayName("사용자 생성 형식과 다른 경우 예외 처리")
     @Test
     void saveUserMethodValidExceptionTest() throws Exception {
         String nickname = "test";
-        String email = "test";
+        String email = "test"; // 이메일 형식에 맞지 않게 기입했을 경우
         String phone = "01012341234";
         String size = "235";
         String address = "Seoul";
@@ -189,7 +189,7 @@ class UserControllerTest {
                 );
     }
 
-    @DisplayName("회원정보수정테스트")
+    @DisplayName("사용자 정보 수정 테스트")
     @Test
     void updateUserTest() throws Exception {
 
@@ -224,7 +224,7 @@ class UserControllerTest {
 
     }
 
-    @DisplayName("회원정보수정조회예외테스트")
+    @DisplayName("없는 사용자 조회하여 수정하려고 하는경우 예외처리")
     @Test
     void updateUserMethodNotFoundUserExceptionTest() throws Exception {
         Long userId = 3L;
@@ -262,12 +262,12 @@ class UserControllerTest {
                 );
     }
 
-    @DisplayName("회원정보수정옵션에러테스트")
+    @DisplayName("잘못된 항목 수정하는 경우 예외 처리")
     @Test
     void updateUserMethodInvalidOptionExceptionTest() throws Exception {
         Long userId = 1L;
         // given
-        String option = "Invalid Option";
+        String option = "Invalid Option"; // 존재하지 않는 옵션 선택
         String value = "updatedNickname";
 
         userUpdateTestRequest = new UserUpdateTestRequest(
@@ -300,7 +300,7 @@ class UserControllerTest {
                 );
     }
 
-    @DisplayName("회원조회_테스트")
+    @DisplayName("사용자 조회 테스트")
     @Test
     void findUserTest() throws Exception {
 
@@ -353,7 +353,7 @@ class UserControllerTest {
                 );
     }
 
-    @DisplayName("회원탈퇴_테스트")
+    @DisplayName("사용자 탈퇴 테스트")
     @Test
     void deleteUserTest() throws Exception {
         // given
@@ -382,7 +382,7 @@ class UserControllerTest {
     @Test
     void deleteUserMethodNotFoundExceptionTest() throws Exception {
         // given
-        Long userId = 3L; //2명의 사용자밖에 없기에 3번째 하면 에러
+        Long userId = 3L; //2명의 사용자밖에 없기에 3번 사용자를 하면 에러
 
         // when
         ResultActions result = mockMvc.perform(delete("/users/{id}", userId)
