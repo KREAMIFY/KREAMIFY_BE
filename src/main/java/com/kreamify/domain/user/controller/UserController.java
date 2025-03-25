@@ -5,11 +5,10 @@ import com.kreamify.domain.user.dto.UserResponse;
 import com.kreamify.domain.user.dto.UserSignUpRequest;
 import com.kreamify.domain.user.dto.UserUpdateRequest;
 import com.kreamify.domain.user.service.UserService;
-
 import com.kreamify.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -28,7 +27,7 @@ public class UserController {
     @Operation(summary = "회원 가입", description = "회원가입 정보를 전달받아 회원가입을 합니다")
     @PostMapping
 
-    public ResponseEntity<ApiResponse<Long>> createUser(@Valid @RequestBody UserSignUpRequest  userSignUpRequest) {
+    public ResponseEntity<ApiResponse<Long>> createUser(@Validated @RequestBody UserSignUpRequest  userSignUpRequest) {
         return ResponseEntity.ok(ApiResponse.of(userService.saveUser(userSignUpRequest)));
 
     }

@@ -38,4 +38,6 @@ public interface SellingRepository extends JpaRepository<SellingBid, Long> {
             nativeQuery = true
     )
     List<BidDetail> findAllByProductAndSizeGroupBy(Long productId, String size);
+
+    List<SellingBid> findFirst2ByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(Product product, String size, String status);
 }

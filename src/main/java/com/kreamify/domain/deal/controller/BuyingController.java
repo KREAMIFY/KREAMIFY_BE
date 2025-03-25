@@ -2,6 +2,8 @@ package com.kreamify.domain.deal.controller;
 
 import com.kreamify.domain.deal.dto.BidRequest;
 import com.kreamify.domain.deal.dto.BidResponse;
+import com.kreamify.domain.deal.dto.BuyRequest;
+import com.kreamify.domain.deal.dto.DealResponse;
 import com.kreamify.domain.deal.service.BuyingService;
 import com.kreamify.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +28,15 @@ public class BuyingController {
             @Valid @RequestBody BidRequest bidRequest
     ) {
         return ResponseEntity.ok(ApiResponse.of(buyingService.registerBuyingBid(id, size, bidRequest)));
+    }
+    @Operation(summary = "즉시 구매 API", description = "즉시 구매 요청이 들어오면 상품 ID와 사이즈를 조회하여, 재고 상태에 따라 구매 가능 여부를 사용자에게 응답합니다")
+    @PostMapping("/{productId}")
+    public ResponseEntity<ApiResponse<DealResponse>>straightBuyProduct(
+            @PathVariable Long productId,
+            @RequestParam String size,
+            @RequestBody BuyRequest buyRequest
+    ) {
+        return ResponseEntity.ok(ApiResponse.of(buyingService.straightBuyProduct(productId, size, buyRequest)));
     }
 
 }

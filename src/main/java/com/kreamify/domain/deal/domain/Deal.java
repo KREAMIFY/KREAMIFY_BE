@@ -1,11 +1,15 @@
 package com.kreamify.domain.deal.domain;
 
+import com.kreamify.domain.deal.dto.DealResponse;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.user.domain.User;
 import com.kreamify.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 @Getter
@@ -63,6 +67,18 @@ public class Deal extends BaseEntity {
         this.product = product;
         this.size = size;
         this.price = price;
+    }
+
+    public DealResponse toResponse() {
+            return DealResponse.of(
+                    id,
+                    product.getEnglishName(),
+                    size,
+                    price,
+                    convertDateTime(this.getCreatedDate()));
+    }
+    private String convertDateTime(LocalDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     }
 
 }
