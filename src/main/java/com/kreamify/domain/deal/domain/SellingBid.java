@@ -2,6 +2,7 @@ package com.kreamify.domain.deal.domain;
 
 import com.kreamify.domain.deal.dto.BidRequest;
 import com.kreamify.domain.deal.dto.BidResponse;
+import com.kreamify.domain.deal.model.DealStatus;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.user.domain.User;
 import com.kreamify.global.domain.BaseEntity;
@@ -75,6 +76,10 @@ public class SellingBid extends BaseEntity {
                         .plusDays(bidRequest.deadline())
                         .format(DateTimeFormatter.ofPattern("yyyyMMdd"))
         );
+    }
+    //거래상태
+    public void changeStatus(DealStatus dealStatus) {
+        this.status = dealStatus.getStatus();
     }
 
 }

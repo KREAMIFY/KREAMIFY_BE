@@ -1,5 +1,6 @@
 package com.kreamify.global.error;
 
+import com.kreamify.domain.deal.exception.NotFoundBidException;
 import com.kreamify.domain.product.exception.NotFoundProductException;
 import com.kreamify.domain.user.exception.DuplicateUserException;
 import com.kreamify.domain.user.exception.InvalidArgumentException;
@@ -33,7 +34,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({NotFoundProductException.class, NotFoundUserException.class})
+    @ExceptionHandler({NotFoundProductException.class, NotFoundUserException.class, NotFoundBidException.class})
+
     public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException exception) {
         log.error("handleNotFoundException", exception);
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NOT_FOUND_RESOURCE);
@@ -53,5 +55,6 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_INPUT);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
 }
 
