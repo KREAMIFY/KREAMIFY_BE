@@ -28,8 +28,10 @@
 |--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|  
 | **Backend**  | ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white) ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=MariaDB&logoColor=white)  ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white) ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=white) <br/>![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white) ![Amazon EC2](https://img.shields.io/badge/Amazon%20EC2-FF9900?style=flat-square&logo=Amazon%20EC2&logoColor=white) ![Amazon ECR](https://img.shields.io/badge/Amazon%20ECR-232F3E?style=flat-square&logo=amazonwebservices&logoColor=white) ![Amazon S3](https://img.shields.io/badge/Amazon%20S3-569A31?style=flat-square&logo=Amazon%20S3&logoColor=white) |
 ### Architecture
-![arch](https://github.com/user-attachments/assets/af397fe6-9af8-4674-9f2d-e89c99d04fd6)
+![arch](https://github.com/user-attachments/assets/18d85049-8484-4978-b5d2-4144bbb7f6e1)
 ### ERD
+![erd](https://github.com/user-attachments/assets/a834b30e-a06d-4702-8051-6dae221e22f2)
+
  
 ## 👥  Cooperation
 
