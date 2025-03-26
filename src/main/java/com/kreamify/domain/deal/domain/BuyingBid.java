@@ -1,5 +1,6 @@
 package com.kreamify.domain.deal.domain;
 
+import com.kreamify.domain.deal.model.DealStatus;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.user.domain.User;
 import com.kreamify.global.domain.BaseEntity;
@@ -56,4 +57,9 @@ public class BuyingBid extends BaseEntity {
         this.suggestPrice = suggestPrice;
         this.deadline = deadline;
     }
+
+    public void changeStatus(DealStatus status) {
+        this.status = status.getStatus();
+    }
+
 }
