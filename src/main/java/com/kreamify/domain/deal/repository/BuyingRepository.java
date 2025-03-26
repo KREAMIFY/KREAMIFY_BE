@@ -2,12 +2,19 @@ package com.kreamify.domain.deal.repository;
 
 import com.kreamify.domain.deal.domain.BuyingBid;
 import com.kreamify.domain.deal.dto.BidDetail;
+import com.kreamify.domain.product.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
 public interface BuyingRepository extends JpaRepository<BuyingBid, Long> {
+
+    List<BuyingBid> findTop2ByProductAndSizeAndStatusOrderBySuggestPriceDescCreatedDateAsc(
+            Product product,
+            String size,
+            String dealStatus
+    );
 
     // 상품의 각 사이즈별 입찰가 조회
     @Query(

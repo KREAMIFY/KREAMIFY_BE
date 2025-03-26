@@ -42,7 +42,7 @@ public class ProductOption {
         this.size = size;
     }
 
-    public void updateBuyLBidPrice(int price) {
+    public void updateBuyBidPrice(int price) {
         this.lowestPrice = price;
     }
 
