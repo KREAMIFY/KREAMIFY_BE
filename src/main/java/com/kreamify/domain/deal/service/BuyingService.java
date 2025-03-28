@@ -10,6 +10,7 @@ import com.kreamify.domain.deal.dto.DealResponse;
 import com.kreamify.domain.deal.exception.NotFoundBidException;
 import com.kreamify.domain.deal.model.DealStatus;
 import com.kreamify.domain.deal.repository.BuyingRepository;
+import com.kreamify.domain.deal.repository.SellingRepository;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.product.domain.ProductOption;
 import com.kreamify.domain.product.service.ProductService;
@@ -33,9 +34,9 @@ public class BuyingService {
     private static final int VALUE_ZERO = 0;
 
     private final BuyingRepository buyingRepository;
+    private final SellingRepository sellingRepository;
     private final ProductService productService;
     private final UserService userService;
-    private final SellingService sellingService;
     private final DealService dealService;
 
     @Transactional
@@ -70,9 +71,13 @@ public class BuyingService {
     public DealResponse straightBuyProduct(Long productId, String size, BuyRequest buyRequest) {
         Product product = productService.findActiveProduct(productId); //구매 가능한 상품만 조회
 
-        List<SellingBid> sellingBids = sellingService.findSellingBidsOfLowestPrice(
-                product, size, DealStatus.BIDDING
+        List<SellingBid> sellingBids = sellingRepository.findFirst2ByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(
+                product, size, DealStatus.BIDDING.getStatus()
         ); //입찰중
+
+        if (sellingBids.isEmpty()) {
+            throw new NotFoundBidException(ErrorCode.NOT_FOUND_RESOURCE);
+        }
 
         ProductOption productOption = productService.findProductOptionByProductIdAndSize(productId, size);
 
