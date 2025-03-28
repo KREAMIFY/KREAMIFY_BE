@@ -10,7 +10,8 @@ import com.kreamify.domain.user.domain.User;
 import com.kreamify.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.*;
+import java.util.List;
+
 @Service
 public class DealService {
     private final DealRepository dealRepository;
@@ -20,7 +21,9 @@ public class DealService {
         this.dealRepository = dealRepository;
         this.userService = userService;
     }
-    public Deal createDeal(BuyingBid buyingBid,  String size, User user, Product product) {
+
+    @Transactional
+    public Deal createDeal(BuyingBid buyingBid, String size, User user, Product product) {
         Deal deal = Deal
                 .builder()
                 .buyer(buyingBid.getUser())
@@ -30,12 +33,12 @@ public class DealService {
                 .price(buyingBid.getSuggestPrice())
                 .build();
         buyingBid.changeStatus(DealStatus.BID_COMPLETED);
-
         return dealRepository.save(deal);
     }
     public Deal createDeal(Deal deal) {
         return dealRepository.save(deal);
     }
+
     @Transactional(readOnly = true)
     public List<DealHistoryResponse> getPendingDealByStatus(Long userId, String status) {
         return dealRepository
@@ -47,6 +50,7 @@ public class DealService {
                 .map(Deal::toHistoryResponse)
                 .toList();
     }
+
     @Transactional(readOnly = true)
     public List<DealHistoryResponse> getAllPendingDealHistory(Long userId) {
         return dealRepository
@@ -55,16 +59,18 @@ public class DealService {
                 .map(Deal::toHistoryResponse)
                 .toList();
     }
+
     @Transactional(readOnly = true)
-    public List<DealHistoryResponse> getFinishedDealByStatus(Long userId,String status) {
+    public List<DealHistoryResponse> getFinishedDealByStatus(Long userId, String status) {
         return dealRepository.findAllByBuyerAndBuyingStatusAndIsFinishedTrue(
-                userService.findActiveUser(userId),
-                status
-        )
+                        userService.findActiveUser(userId),
+                        status
+                )
                 .stream()
                 .map(Deal::toHistoryDateResponse)
                 .toList();
     }
+
     @Transactional(readOnly = true)
     public List<DealHistoryResponse> getAllFinishedDealHistory(Long userId) {
         return dealRepository.findAllByBuyerAndIsFinishedTrue(

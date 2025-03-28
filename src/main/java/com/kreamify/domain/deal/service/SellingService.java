@@ -1,10 +1,15 @@
 package com.kreamify.domain.deal.service;
 
+import com.kreamify.domain.deal.domain.BuyingBid;
+import com.kreamify.domain.deal.domain.Deal;
 import com.kreamify.domain.deal.domain.SellingBid;
 import com.kreamify.domain.deal.dto.BidRequest;
 import com.kreamify.domain.deal.dto.BidResponse;
+import com.kreamify.domain.deal.dto.BuyRequest;
+import com.kreamify.domain.deal.dto.DealResponse;
 import com.kreamify.domain.deal.exception.NotFoundBidException;
 import com.kreamify.domain.deal.model.DealStatus;
+import com.kreamify.domain.deal.repository.BuyingRepository;
 import com.kreamify.domain.deal.repository.SellingRepository;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.product.domain.ProductOption;
@@ -22,10 +27,52 @@ import java.util.List;
 public class SellingService {
 
     private static final int ZERO = 0;
+    private static final int FIRST_BID = 0;
+    private static final int SECOND_BID = 1;
+    private static final int ONLY_ONE_BID = 1;
+    private static final int ALL_BID = 2;
 
     private final SellingRepository sellingRepository;
+    private final BuyingRepository buyingRepository;
     private final ProductService productService;
     private final UserService userService;
+    private final DealService dealService;
+
+    @Transactional
+    public DealResponse straightSellProduct(Long productId, String size, BuyRequest buyRequest) {
+        Product product = productService.findActiveProduct(productId);
+        List<BuyingBid> buyingBids = buyingRepository.findTop2ByProductAndSizeAndStatusOrderBySuggestPriceDescCreatedDateAsc(
+                product,
+                size,
+                DealStatus.BIDDING.getStatus()
+        );
+
+        if (buyingBids.isEmpty()) {
+            throw new NotFoundBidException(ErrorCode.NOT_FOUND_RESOURCE);
+        }
+
+        BuyingBid firstBuyingBid = buyingBids.get(FIRST_BID);
+
+        Deal deal = dealService.createDeal(
+                firstBuyingBid,
+                size,
+                userService.findActiveUser(buyRequest.userId()),
+                productService.findActiveProduct(productId)
+        );
+
+        ProductOption productOption = productService.findProductOptionByProductIdAndSize(
+                productId, size
+        );
+
+        if (buyingBids.size() == ONLY_ONE_BID) {
+            productOption.updateBuyBidPrice(ZERO);
+        } else if (buyingBids.size() == ALL_BID) {
+            BuyingBid secondBuyingBid = buyingBids.get(SECOND_BID);
+            productOption.updateBuyBidPrice(secondBuyingBid.getSuggestPrice());
+        }
+
+        return deal.toResponse();
+    }
 
     @Transactional
     public BidResponse registerSellingBid(Long id, String size, BidRequest bidRequest) {
@@ -77,28 +124,11 @@ public class SellingService {
                 size);
     }
 
-
     private void updateLowestPrice(BidRequest bidRequest, ProductOption productOption) {
-        if (productOption.getLowestPrice() > bidRequest.price() || productOption.getLowestPrice() == ZERO) {
+        if (productOption.getLowestPrice() > bidRequest.price()
+                || productOption.getLowestPrice() == ZERO) {
             productOption.updateSellBidPrice(bidRequest.price());
         }
     }
-    //
-    @Transactional(readOnly = true)
-    public List<SellingBid> findSellingBidsOfLowestPrice(
-            Product product, String size, DealStatus dealStatus
-    ) {
-        List<SellingBid> sellingBids = sellingRepository
-                //findFist2By -> Limit 2 역할 (가격이 낮고 등록 오래된 상품 2개 - SuggestPrice *가격이 낮은순 &  CreatedDate *같은 가격이면 오래된 순)
-                .findFirst2ByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(
-                        product,
-                        size,
-                        dealStatus.getStatus()
-                );
-        //상품 없는 경우
-        if (sellingBids.isEmpty()) {
-            throw new NotFoundBidException(ErrorCode.NOT_FOUND_RESOURCE);
-        }
-        return sellingBids;
-    }
+
 }
