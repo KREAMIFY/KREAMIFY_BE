@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface DealRepository extends JpaRepository<Deal, Long> {
 
-    Optional<Deal> findFirstByProductOrderByCreatedDateDesc(Product pRoduct);
+    Optional<Deal> findFirstByProductOrderByCreatedDateDesc(Product product);
 
     Optional<Deal> findFirstByProductAndSizeOrderByCreatedDateDesc(Product product, String size);
 
