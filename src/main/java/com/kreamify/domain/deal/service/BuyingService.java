@@ -3,10 +3,7 @@ package com.kreamify.domain.deal.service;
 import com.kreamify.domain.deal.domain.BuyingBid;
 import com.kreamify.domain.deal.domain.Deal;
 import com.kreamify.domain.deal.domain.SellingBid;
-import com.kreamify.domain.deal.dto.BidRequest;
-import com.kreamify.domain.deal.dto.BidResponse;
-import com.kreamify.domain.deal.dto.BuyRequest;
-import com.kreamify.domain.deal.dto.DealResponse;
+import com.kreamify.domain.deal.dto.*;
 import com.kreamify.domain.deal.model.DealStatus;
 import com.kreamify.domain.deal.repository.BuyingRepository;
 import com.kreamify.domain.product.domain.Product;
@@ -91,6 +88,25 @@ public class BuyingService {
 
 
 
+    }
+    @Transactional(readOnly = true)
+    public List<BuyingBidResponse>  getBiddingHistoryByStatus(Long userId, String status) {
+        return buyingRepository
+                .findAllByUserAndStatus(
+                    userService.findActiveUser(userId),
+                    status
+        )
+                .stream()
+                .map(BuyingBid::toResponse)
+                .toList();
+    }
+    @Transactional(readOnly = true)
+    public List<BuyingBidResponse> getAllBiddingHistory(Long userId) {
+        return buyingRepository
+                .findAllByUser(userService.findActiveUser(userId))
+                .stream()
+                .map(BuyingBid ::toResponse)
+                .toList();
     }
 
 
