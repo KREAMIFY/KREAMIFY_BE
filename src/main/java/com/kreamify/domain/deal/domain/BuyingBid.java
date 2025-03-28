@@ -1,12 +1,16 @@
 package com.kreamify.domain.deal.domain;
 
+
 import com.kreamify.domain.deal.model.DealStatus;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.user.domain.User;
 import com.kreamify.global.domain.BaseEntity;
+import com.kreamify.domain.deal.dto.BuyingBidResponse;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Entity
@@ -57,9 +61,26 @@ public class BuyingBid extends BaseEntity {
         this.suggestPrice = suggestPrice;
         this.deadline = deadline;
     }
-
     public void changeStatus(DealStatus status) {
         this.status = status.getStatus();
+
     }
+    public String getConvertCreatedDate() {
+        return getCreatedDate().format(DateTimeFormatter.ofPattern("yy/MM/dd"));
+    }
+
+    public BuyingBidResponse toResponse() {
+        return new BuyingBidResponse(
+                id,
+                product.getImage(),
+                product.getEnglishName(),
+                size,
+                suggestPrice,
+                status,
+                getConvertCreatedDate()
+        );
+    }
+
+
 
 }

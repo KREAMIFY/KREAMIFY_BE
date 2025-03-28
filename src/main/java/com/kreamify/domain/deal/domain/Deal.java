@@ -1,5 +1,6 @@
 package com.kreamify.domain.deal.domain;
 
+import com.kreamify.domain.deal.dto.DealHistoryResponse;
 import com.kreamify.domain.deal.dto.DealResponse;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.user.domain.User;
@@ -80,5 +81,29 @@ public class Deal extends BaseEntity {
     private String convertDateTime(LocalDateTime dateTime) {
         return dateTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
     }
+    public String getConvertCreatedDate() {
+        return getCreatedDate().format(DateTimeFormatter.ofPattern("yy/MM/dd"));
+    }
 
-}
+    public DealHistoryResponse toHistoryResponse() {
+        return new DealHistoryResponse(
+                id,
+                product.getImage(),
+                product.getEnglishName(),
+                size,
+                buyingStatus
+        );
+    }
+
+    public DealHistoryResponse toHistoryDateResponse() {
+        return new DealHistoryResponse(
+                id,
+                product.getImage(),
+                product.getEnglishName(),
+                size,
+                buyingStatus,
+                getConvertCreatedDate()
+        );
+
+    }
+    }

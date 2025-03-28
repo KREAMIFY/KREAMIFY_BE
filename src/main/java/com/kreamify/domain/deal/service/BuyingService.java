@@ -3,10 +3,7 @@ package com.kreamify.domain.deal.service;
 import com.kreamify.domain.deal.domain.BuyingBid;
 import com.kreamify.domain.deal.domain.Deal;
 import com.kreamify.domain.deal.domain.SellingBid;
-import com.kreamify.domain.deal.dto.BidRequest;
-import com.kreamify.domain.deal.dto.BidResponse;
-import com.kreamify.domain.deal.dto.BuyRequest;
-import com.kreamify.domain.deal.dto.DealResponse;
+import com.kreamify.domain.deal.dto.*;
 import com.kreamify.domain.deal.exception.NotFoundBidException;
 import com.kreamify.domain.deal.model.DealStatus;
 import com.kreamify.domain.deal.repository.BuyingRepository;
@@ -92,15 +89,37 @@ public class BuyingService {
         }
 
         //거래 성공
-        return dealService.createDeal(
-                Deal.builder()
-                        .buyer(userService.findActiveUser(buyRequest.userId()))
-                        .seller(topSellingBid.getUser()) //판매자
-                        .product(topSellingBid.getProduct())
-                        .size(size)
-                        .price(topSellingBid.getSuggestPrice())
-                        .build()
-        ).toResponse();
+        return dealService
+                .createDeal(
+                        Deal
+                                .builder()
+                                .buyer(userService.findActiveUser(buyRequest.userId()))
+                                .seller(topSellingBid.getUser())
+                                .product(topSellingBid.getProduct())
+                                .size(size)
+                                .price(topSellingBid.getSuggestPrice())
+                                .build()
+                )
+                .toResponse();
+    }
+    @Transactional(readOnly = true)
+    public List<BuyingBidResponse>  getBiddingHistoryByStatus(Long userId, String status) {
+        return buyingRepository
+                .findAllByUserAndStatus(
+                    userService.findActiveUser(userId),
+                    status
+        )
+                .stream()
+                .map(BuyingBid::toResponse)
+                .toList();
+    }
+    @Transactional(readOnly = true)
+    public List<BuyingBidResponse> getAllBiddingHistory(Long userId) {
+        return buyingRepository
+                .findAllByUser(userService.findActiveUser(userId))
+                .stream()
+                .map(BuyingBid ::toResponse)
+                .toList();
     }
 
     @Transactional(readOnly = true)
