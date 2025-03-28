@@ -29,7 +29,9 @@ public class UserShoppingInfoController {
         this.sellingService = sellingService;
         this.dealService = dealService;
     }
-    @Operation(summary = "구매 입찰 내역 조회", description = "사용자의 ID와 상태 값(선택)을 이용해 구매 입찰 내역을 조회합니다.")    @GetMapping("/buying/bidding")
+
+    @Operation(summary = "구매 입찰 내역 조회", description = "사용자의 ID와 상태 값(선택)을 이용해 구매 입찰 내역을 조회합니다.")
+    @GetMapping("/buying/bidding")
     public ResponseEntity<ApiResponse<List<BuyingBidResponse>>> getBiddingHistory(
             @PathVariable Long userId,
             @RequestParam Optional<String> status
@@ -43,7 +45,8 @@ public class UserShoppingInfoController {
         );
 
     }
-    @Operation(summary = "구매 보류 상품 조회", description = "사용자의 ID와 상태 값(선택)을 이용해 구매가 보류된 상품 내역을 조회합니다.")    @GetMapping("/buying/pending")
+    @Operation(summary = "구매 거래 진행 중 내역 조회 API",  description = "구매 입찰 거래가 체결되어 거래 진행 중인 내역을 조회합니다.")
+    @GetMapping("/buying/pending")
     public ResponseEntity<ApiResponse<List<DealHistoryResponse>>> getPendingDealHistory(
             @PathVariable Long userId,
             @RequestParam Optional<String> status
@@ -57,7 +60,8 @@ public class UserShoppingInfoController {
         );
 
     }
-    @Operation(summary = "구매 완료 상품 조회", description = "사용자의 ID와 상태 값(선택)을 이용해 구매가 완료된 상품 내역을 조회합니다.")    @GetMapping("/buying/finished")
+    @Operation(summary = "구매 거래 종료 내역 조회 API", description ="거래가 종료된 내역을 조회합니다.")
+    @GetMapping("/buying/finished")
     public ResponseEntity<ApiResponse<List<DealHistoryResponse>>> getFinishedDealHistory(
             @PathVariable Long userId,
             @RequestParam Optional<String> status
