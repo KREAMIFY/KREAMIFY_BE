@@ -29,7 +29,7 @@ public class ProductRequest {
     @NotBlank
     private String color;
 
-    @NotBlank
+    @NotNull
     private LocalDate releaseDate;
 
     @NotNull
