@@ -2,15 +2,15 @@ package com.kreamify.domain.deal.service;
 
 import com.kreamify.domain.deal.domain.BuyingBid;
 import com.kreamify.domain.deal.domain.Deal;
-import com.kreamify.domain.deal.dto.DealHistoryResponse;
 import com.kreamify.domain.deal.model.DealStatus;
 import com.kreamify.domain.deal.repository.DealRepository;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.user.domain.User;
+import com.kreamify.domain.user.dto.UserBuyingDealHistoryResponse;
+import com.kreamify.domain.user.dto.UserDealHistoryResponse;
 import com.kreamify.domain.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 public class DealService {
@@ -35,50 +35,119 @@ public class DealService {
         buyingBid.changeStatus(DealStatus.BID_COMPLETED);
         return dealRepository.save(deal);
     }
+
+
+    @Transactional(readOnly = true)
+    public UserDealHistoryResponse getFinishedDealHistory(Long id){
+        return new UserDealHistoryResponse(
+                dealRepository.findAllBySellerAndIsFinishedTrue(
+                        userService.findActiveUser(id)
+                )
+                        .stream()
+                        .map(Deal::toUserDealResponse)
+                        .toList()
+        );
+    }
+
+
+
+    @Transactional(readOnly = true)
+    public UserDealHistoryResponse getFinishedDealHistoryByStatus(Long id,String status){
+        return new UserDealHistoryResponse(
+                dealRepository.findAllBySellerAndSellingStatusAndIsFinishedTrue(
+                                userService.findActiveUser(id),
+                                status
+                        )
+                        .stream()
+                        .map(Deal::toUserDealResponse)
+                        .toList()
+        );
+    }
+    @Transactional(readOnly = true)
+    public UserDealHistoryResponse getPendingDealHistory(
+            Long id
+    ) {
+        return new UserDealHistoryResponse(
+                dealRepository
+                        .findAllBySellerAndIsFinishedFalse(
+                                userService.findActiveUser(id)
+                        )
+                        .stream()
+                        .map(Deal::toUserDealResponse)
+                        .toList()
+        );
+    }
+    public UserDealHistoryResponse getPendingDealHistoryByStatus(
+            Long id,
+            String status
+    ) {
+        return new UserDealHistoryResponse(
+                dealRepository
+                        .findAllBySellerAndSellingStatusAndIsFinishedFalse(
+                                userService.findActiveUser(id),
+                                status
+                        )
+                        .stream()
+                        .map(Deal::toUserDealResponse)
+                        .toList()
+        );
+    }
     public Deal createDeal(Deal deal) {
         return dealRepository.save(deal);
     }
-
     @Transactional(readOnly = true)
-    public List<DealHistoryResponse> getPendingDealByStatus(Long userId, String status) {
-        return dealRepository
-                .findAllByBuyerAndBuyingStatusAndIsFinishedFalse(
-                        userService.findActiveUser(userId),
-                        status
-                )
-                .stream()
-                .map(Deal::toHistoryResponse)
-                .toList();
+    public UserBuyingDealHistoryResponse getPendingDealByStatus(Long userId, String status) {
+        return new UserBuyingDealHistoryResponse(
+                dealRepository
+                        .findAllByBuyerAndBuyingStatusAndIsFinishedFalse(
+                                userService.findActiveUser(userId),
+                                status
+                        )
+                        .stream()
+                        .map(Deal::toHistoryResponse)
+                        .toList()
+        );
     }
 
     @Transactional(readOnly = true)
-    public List<DealHistoryResponse> getAllPendingDealHistory(Long userId) {
-        return dealRepository
-                .findAllByBuyerAndIsFinishedFalse(userService.findActiveUser(userId))
-                .stream()
-                .map(Deal::toHistoryResponse)
-                .toList();
+    public UserBuyingDealHistoryResponse getAllPendingDealHistory(Long userId) {
+        return new UserBuyingDealHistoryResponse(
+                dealRepository
+                        .findAllByBuyerAndIsFinishedFalse(
+                                userService.findActiveUser(userId))
+                        .stream()
+                        .map(Deal::toHistoryResponse)
+                        .toList()
+        );
     }
 
     @Transactional(readOnly = true)
-    public List<DealHistoryResponse> getFinishedDealByStatus(Long userId, String status) {
-        return dealRepository.findAllByBuyerAndBuyingStatusAndIsFinishedTrue(
-                        userService.findActiveUser(userId),
-                        status
-                )
-                .stream()
-                .map(Deal::toHistoryDateResponse)
-                .toList();
+    public UserBuyingDealHistoryResponse getFinishedDealByStatus(Long userId, String status) {
+        return new UserBuyingDealHistoryResponse(
+                dealRepository
+                        .findAllByBuyerAndBuyingStatusAndIsFinishedTrue(
+                                userService.findActiveUser(userId),
+                                status
+                        )
+                        .stream()
+                        .map(Deal::toHistoryDateResponse)
+                        .toList()
+        );
     }
 
     @Transactional(readOnly = true)
-    public List<DealHistoryResponse> getAllFinishedDealHistory(Long userId) {
-        return dealRepository.findAllByBuyerAndIsFinishedTrue(
-                        userService.findActiveUser(userId))
-                .stream()
-                .map(Deal::toHistoryDateResponse)
-                .toList();
+    public UserBuyingDealHistoryResponse getAllFinishedDealHistory(Long userId) {
+        return new UserBuyingDealHistoryResponse(
+                dealRepository
+                        .findAllByBuyerAndIsFinishedTrue(
+                                userService.findActiveUser(userId))
+                        .stream()
+                        .map(Deal::toHistoryDateResponse)
+                        .toList()
+        );
     }
+
+
 
 
 }

@@ -5,11 +5,13 @@ import lombok.Getter;
 @Getter
 public enum DealStatus {
 
-    BIDDING("입찰중"),
-    EXPIRED("기한 만료"),
+
+    BIDDING("입찰 중"),
+    EXPIRED("기한만료"),
     BID_COMPLETED("입찰 완료"),
     UNDER_INSPECTION("검수 중"),
-    SHIP_COMPLETED("배송 완료"),
+    SHIP_COMPLETED("배송완료"),
+    PAYMENT_COMPLETED("결제 완료"),
     ;
 
     private final String status;
