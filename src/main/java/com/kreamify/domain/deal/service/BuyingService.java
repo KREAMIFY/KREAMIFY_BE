@@ -67,29 +67,35 @@ public class BuyingService {
     //즉시 구매 요청
     @Transactional
     public DealResponse straightBuyProduct(Long productId, String size, BuyRequest buyRequest) {
-        Product product = productService.findActiveProduct(productId); //구매 가능한 상품만 조회
-
-        List<SellingBid> sellingBids = sellingRepository.findFirst2ByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(
-                product, size, DealStatus.BIDDING.getStatus()
-        ); //입찰중
+        Product product = productService.findActiveProduct(productId);
+        List<SellingBid> sellingBids = sellingRepository
+                .findFirst2ByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(
+                        product,
+                        size,
+                        DealStatus.BIDDING.getStatus()
+                );
 
         if (sellingBids.isEmpty()) {
             throw new NotFoundBidException(ErrorCode.NOT_FOUND_RESOURCE);
         }
 
-        ProductOption productOption = productService.findProductOptionByProductIdAndSize(productId, size);
-
-        SellingBid topSellingBid = sellingBids.get(FIRST_BID); //최저가 판매 입찰
-
-        topSellingBid.changeStatus(DealStatus.BID_COMPLETED); //최저가 입찰 완료 (=즉시 구매하면 가장 저렴한 입찰이 낙찰)
-
+        ProductOption productOption = productService
+                .findProductOptionByProductIdAndSize(
+                        productId,
+                        size
+                );
+        SellingBid topSellingBid = sellingBids.get(FIRST_BID);
+        topSellingBid.changeStatus(DealStatus.BID_COMPLETED);
         if (sellingBids.size() < TWO_BIDS) {
             productOption.updateSellBidPrice(VALUE_ZERO);
         } else if (sellingBids.size() == TWO_BIDS) {
-            productOption.updateSellBidPrice(sellingBids.get(SECOND_BID).getSuggestPrice());
+            productOption.updateSellBidPrice(
+                    sellingBids
+                            .get(SECOND_BID)
+                            .getSuggestPrice()
+            );
         }
 
-        //거래 성공
         return dealService
                 .createDeal(
                         Deal
@@ -104,42 +110,30 @@ public class BuyingService {
                 .toResponse();
     }
     @Transactional(readOnly = true)
-    public List<BuyingBidResponse>  getBiddingHistoryByStatus(Long userId, String status) {
-        return buyingRepository
-                .findAllByUserAndStatus(
-                    userService.findActiveUser(userId),
-                    status
-        )
-                .stream()
-                .map(BuyingBid::toResponse)
-                .toList();
-    }
-    @Transactional(readOnly = true)
-    public List<BuyingBidResponse> getAllBiddingHistory(Long userId) {
-        return buyingRepository
-                .findAllByUser(userService.findActiveUser(userId))
-                .stream()
-                .map(BuyingBid ::toResponse)
-                .toList();
+    public BuyingHistoryResponse getBiddingHistoryByStatus(Long userId, String status) {
+        return new BuyingHistoryResponse(
+                buyingRepository
+                        .findAllByUserAndStatus(
+                                userService.findActiveUser(userId),
+                                status
+                        )
+                        .stream()
+                        .map(BuyingBid::toResponse)
+                        .toList());
     }
 
     @Transactional(readOnly = true)
-    public List<BuyingBid> findBuyingBid(Long productId, String size, DealStatus status) {
-        Product product = productService.findActiveProduct(productId);
-
-        List<BuyingBid> buyingBids = buyingRepository
-                .findTop2ByProductAndSizeAndStatusOrderBySuggestPriceDescCreatedDateAsc(
-                        product,
-                        size,
-                        status.getStatus()
-                );
-
-        if (buyingBids.isEmpty()) {
-            throw new NotFoundBidException(ErrorCode.NOT_FOUND_RESOURCE);
-        }
-
-        return buyingBids;
+    public BuyingHistoryResponse getAllBiddingHistory(Long userId) {
+        return new BuyingHistoryResponse(
+                buyingRepository
+                        .findAllByUser(userService.findActiveUser(userId))
+                        .stream()
+                        .map(BuyingBid::toResponse)
+                        .toList()
+        );
     }
+
+
 
     @Transactional
     public void cancelBuyingBid(Long userId, Long bidId) {

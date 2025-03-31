@@ -3,10 +3,7 @@ package com.kreamify.domain.deal.service;
 import com.kreamify.domain.deal.domain.BuyingBid;
 import com.kreamify.domain.deal.domain.Deal;
 import com.kreamify.domain.deal.domain.SellingBid;
-import com.kreamify.domain.deal.dto.BidRequest;
-import com.kreamify.domain.deal.dto.BidResponse;
-import com.kreamify.domain.deal.dto.BuyRequest;
-import com.kreamify.domain.deal.dto.DealResponse;
+import com.kreamify.domain.deal.dto.*;
 import com.kreamify.domain.deal.exception.NotFoundBidException;
 import com.kreamify.domain.deal.model.DealStatus;
 import com.kreamify.domain.deal.repository.BuyingRepository;
@@ -129,6 +126,38 @@ public class SellingService {
                 || productOption.getLowestPrice() == ZERO) {
             productOption.updateSellBidPrice(bidRequest.price());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public SellingHistoryResponse getAllSellingHistory(
+            Long id
+    ) {
+        return new SellingHistoryResponse(
+                sellingRepository
+                        .findAllByUser(
+                                userService.findActiveUser(id)
+                        )
+                        .stream()
+                        .map(SellingBid::toSellingBidResponse)
+                        .toList()
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public SellingHistoryResponse getAllSellingHistoryByStatus(
+            Long id,
+            String status
+    ) {
+        return new SellingHistoryResponse(
+                sellingRepository
+                        .findAllByUserAndStatus(
+                                userService.findActiveUser(id),
+                                status
+                        )
+                        .stream()
+                        .map(SellingBid::toSellingBidResponse)
+                        .toList()
+        );
     }
 
 }
