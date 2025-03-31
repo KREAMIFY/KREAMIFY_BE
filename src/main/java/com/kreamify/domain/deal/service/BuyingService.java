@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -133,5 +134,34 @@ public class BuyingService {
     }
 
 
+
+    @Transactional
+    public void cancelBuyingBid(Long userId, Long bidId) {
+        BuyingBid buyingBid = buyingRepository
+                .findByIdAndUserAndStatus(
+                        bidId,
+                        userService.findActiveUser(userId),
+                        DealStatus.BIDDING.getStatus()
+                )
+                .orElseThrow(() -> new NotFoundBidException(ErrorCode.NOT_FOUND_RESOURCE));
+        buyingBid.cancel();
+
+        ProductOption productOption = productService.findProductOptionByProductIdAndSize(
+                buyingBid.getProduct().getId(), buyingBid.getSize()
+        );
+
+        // 입찰 취소 후 남아있는 입찰 중 최고 가격의 입찰을 찾아 업데이트
+        Optional<BuyingBid> topPriceBid = buyingRepository
+                .findFirstByProductAndSizeAndStatusOrderBySuggestPriceDesc(
+                        buyingBid.getProduct(),
+                        buyingBid.getSize(),
+                        DealStatus.BIDDING.getStatus()
+                );
+
+        // 최고 입찰(topPriceBid)이 존재하면 해당 가격으로 업데이트, 없는 경우 0으로 설정
+        productOption.updateBuyBidPrice(
+                topPriceBid.map(BuyingBid::getSuggestPrice).orElse(VALUE_ZERO)
+        );
+    }
 
 }

@@ -9,6 +9,7 @@ import com.kreamify.domain.user.dto.UserBuyingDealHistoryResponse;
 import com.kreamify.domain.user.dto.UserDealHistoryResponse;
 import com.kreamify.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,14 +25,25 @@ public class UserShoppingInfoController {
             BuyingService buyingService,
             SellingService sellingService,
             DealService dealService
-    ){
+    ) {
         this.buyingService = buyingService;
         this.sellingService = sellingService;
         this.dealService = dealService;
     }
 
+    @Operation(summary = "구매 입찰 취소 API", description = "사용자가 구매 입찰 내역 중 특정 구매 입찰을 취소합니다.")
+    @DeleteMapping("/buying/{bidId}")
+    public ResponseEntity<Void> cancelBuyingBid(
+            @PathVariable Long userId,
+            @PathVariable Long bidId
+    ) {
+        buyingService.cancelBuyingBid(userId, bidId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @Operation(summary = "구매 입찰 내역 조회", description = "사용자의 ID와 상태 값(선택)을 이용해 구매 입찰 내역을 조회합니다.")
     @GetMapping("/buying/bidding")
+
     public ResponseEntity<ApiResponse<BuyingHistoryResponse>> getBiddingHistory(
             @PathVariable Long userId,
             @RequestParam Optional<String> status

@@ -65,6 +65,11 @@ public class BuyingBid extends BaseEntity {
         this.status = status.getStatus();
 
     }
+
+    public void cancel() {
+        this.status = DealStatus.BID_CANCELED.getStatus();
+    }
+
     public String getConvertCreatedDate() {
         return getCreatedDate().format(DateTimeFormatter.ofPattern("yy/MM/dd"));
     }
