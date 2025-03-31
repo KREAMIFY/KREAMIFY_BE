@@ -31,10 +31,10 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.of(userService.saveUser(userSignUpRequest)));
 
     }
+
     //회원 정보 수정
     @Operation(summary = "회원 정보 수정",description = "회원 ID와 수정정보를 이용하여 회원정보를 각각 수정 ")
     @PatchMapping("/{id}")
-
     public ResponseEntity<ApiResponse<Long>> updateUser (
             @PathVariable Long id,
             @RequestBody UserUpdateRequest userUpdateRequest

@@ -12,9 +12,15 @@ import java.util.Optional;
 
 public interface SellingRepository extends JpaRepository<SellingBid, Long> {
 
-    Optional<SellingBid> findByUserAndProductAndSize(User user, Product product, String size);
 
     boolean existsByUserAndProductAndSize(User user, Product product, String size);
+
+    Optional<SellingBid> findByUserAndProductAndSize(User user, Product product, String size);
+    List<SellingBid> findFirst2ByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(Product product, String size, String status);
+
+    List<SellingBid> findAllByUserAndStatus(User user, String status);
+
+    List<SellingBid> findAllByUser(User user);
     // 상품의 각 사이즈별 판매 입찰 내역 조회
     @Query(
             value =
@@ -39,5 +45,6 @@ public interface SellingRepository extends JpaRepository<SellingBid, Long> {
     )
     List<BidDetail> findAllByProductAndSizeGroupBy(Long productId, String size);
 
-    List<SellingBid> findFirst2ByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(Product product, String size, String status);
+
+
 }

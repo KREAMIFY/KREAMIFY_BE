@@ -4,6 +4,7 @@ import com.kreamify.domain.deal.dto.DealHistoryResponse;
 import com.kreamify.domain.deal.dto.DealResponse;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.user.domain.User;
+import com.kreamify.domain.user.dto.UserDealResponse;
 import com.kreamify.global.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -105,5 +106,16 @@ public class Deal extends BaseEntity {
                 getConvertCreatedDate()
         );
 
+    }
+
+    public UserDealResponse toUserDealResponse() {
+        return new UserDealResponse(
+                this.product.getImage(),
+                this.product.getKoreanName(),
+                this.size,
+                this.price,
+                convertDateTime(this.getCreatedDate()),
+                this.getSellingStatus()
+        );
     }
     }

@@ -3,14 +3,11 @@ package com.kreamify.domain.deal.repository;
 import com.kreamify.domain.deal.domain.BuyingBid;
 import com.kreamify.domain.deal.dto.BidDetail;
 import com.kreamify.domain.product.domain.Product;
-
 import com.kreamify.domain.user.domain.User;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface BuyingRepository extends JpaRepository<BuyingBid, Long> {
     List<BuyingBid> findTop2ByProductAndSizeAndStatusOrderBySuggestPriceDescCreatedDateAsc(
@@ -44,9 +41,7 @@ public interface BuyingRepository extends JpaRepository<BuyingBid, Long> {
     List<BidDetail> findAllByProductAndSizeGroupBy(Long productId, String size);
 
 
-    Optional<BuyingBid> findByIdAndUserAndStatus(Long bidId, User user, String status);
 
-    Optional<BuyingBid> findFirstByProductAndSizeAndStatusOrderBySuggestPriceDesc(Product product, String size, String status);
 
     List<BuyingBid> findAllByUserAndStatus(User user, String status);
 
