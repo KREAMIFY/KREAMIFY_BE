@@ -7,6 +7,7 @@ import com.kreamify.domain.deal.service.DealService;
 import com.kreamify.domain.deal.service.SellingService;
 import com.kreamify.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,14 +25,25 @@ public class UserShoppingInfoController {
             BuyingService buyingService,
             SellingService sellingService,
             DealService dealService
-    ){
+    ) {
         this.buyingService = buyingService;
         this.sellingService = sellingService;
         this.dealService = dealService;
     }
 
+    @Operation(summary = "구매 입찰 취소 API", description = "사용자가 구매 입찰 내역 중 특정 구매 입찰을 취소합니다.")
+    @DeleteMapping("/buying/{bidId}")
+    public ResponseEntity<Void> cancelBuyingBid(
+            @PathVariable Long userId,
+            @PathVariable Long bidId
+    ) {
+        buyingService.cancelBuyingBid(userId, bidId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @Operation(summary = "구매 입찰 내역 조회", description = "사용자의 ID와 상태 값(선택)을 이용해 구매 입찰 내역을 조회합니다.")
     @GetMapping("/buying/bidding")
+
     public ResponseEntity<ApiResponse<List<BuyingBidResponse>>> getBiddingHistory(
             @PathVariable Long userId,
             @RequestParam Optional<String> status
@@ -39,13 +51,14 @@ public class UserShoppingInfoController {
         return ResponseEntity.ok(
                 ApiResponse.of(
                         status
-                                .map(bidStatus -> buyingService.getBiddingHistoryByStatus(userId,bidStatus))
+                                .map(bidStatus -> buyingService.getBiddingHistoryByStatus(userId, bidStatus))
                                 .orElse(buyingService.getAllBiddingHistory(userId))
                 )
         );
 
     }
-    @Operation(summary = "구매 거래 진행 중 내역 조회 API",  description = "구매 입찰 거래가 체결되어 거래 진행 중인 내역을 조회합니다.")
+
+    @Operation(summary = "구매 거래 진행 중 내역 조회 API", description = "구매 입찰 거래가 체결되어 거래 진행 중인 내역을 조회합니다.")
     @GetMapping("/buying/pending")
     public ResponseEntity<ApiResponse<List<DealHistoryResponse>>> getPendingDealHistory(
             @PathVariable Long userId,
@@ -60,7 +73,8 @@ public class UserShoppingInfoController {
         );
 
     }
-    @Operation(summary = "구매 거래 종료 내역 조회 API", description ="거래가 종료된 내역을 조회합니다.")
+
+    @Operation(summary = "구매 거래 종료 내역 조회 API", description = "거래가 종료된 내역을 조회합니다.")
     @GetMapping("/buying/finished")
     public ResponseEntity<ApiResponse<List<DealHistoryResponse>>> getFinishedDealHistory(
             @PathVariable Long userId,
