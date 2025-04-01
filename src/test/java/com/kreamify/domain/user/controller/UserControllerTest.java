@@ -1,3 +1,4 @@
+
 package com.kreamify.domain.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,10 +9,8 @@ import com.kreamify.domain.user.exception.DuplicateUserException;
 import com.kreamify.domain.user.exception.InvalidArgumentException;
 import com.kreamify.domain.user.exception.NotFoundUserException;
 import jakarta.validation.ConstraintViolationException;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @ActiveProfiles("local")
 @Transactional
 @AutoConfigureMockMvc
@@ -49,7 +47,7 @@ class UserControllerTest {
         // given
         String nickname = "test1";
         String email = "test1@email.com";
-        String phone = "01012345678";
+        String phone = "01056785678";
         String size = "265";
         String address = "Seoul";
 
@@ -83,7 +81,7 @@ class UserControllerTest {
     void saveUserMethodDuplicateExceptionTest() throws Exception {
         String nickname = "nickName2";
         String email = "email1@email.com";
-        String phone = "01012341234";
+        String phone = "01012345678";
         String size = "265";
         String address = "Seoul";
 
