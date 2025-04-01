@@ -31,6 +31,15 @@ public class UserShoppingInfoController {
         this.dealService = dealService;
     }
 
+    @DeleteMapping("/selling/{bidId}")
+    public ResponseEntity<Void> cancelSellingBid(
+            @PathVariable Long userId,
+            @PathVariable Long bidId
+    ) {
+        sellingService.cancelSellingBid(bidId, userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @Operation(summary = "구매 입찰 취소 API", description = "사용자가 구매 입찰 내역 중 특정 구매 입찰을 취소합니다.")
     @DeleteMapping("/buying/{bidId}")
     public ResponseEntity<Void> cancelBuyingBid(
