@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/products")
@@ -30,8 +31,10 @@ public class AdminController {
     @Operation(summary = "상품 리스트 조회",
             description = "특정 조건에 맞는 상품들을 조회할 수 있습니다.")
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<ProductsResponse>>> getProducts() {
-        return ResponseEntity.ok(ApiResponse.of(productService.getProducts()));
+    public ResponseEntity<ApiResponse<List<ProductsResponse>>> getProducts(
+            @RequestParam(required = false)Map<String, String> filter
+            ) {
+        return ResponseEntity.ok(ApiResponse.of(productService.getProducts(filter)));
     }
 
     @Operation(summary = "특정 상품 조회",

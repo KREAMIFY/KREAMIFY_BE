@@ -21,7 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+
+import static com.kreamify.domain.product.repository.ProductSpecification.filterProduct;
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +45,9 @@ public class ProductService {
     private final SellingRepository sellingRepository;
 
     @Transactional(readOnly = true)
-    public List<ProductsResponse> getProducts() {
+    public List<ProductsResponse> getProducts(Map<String, String> filter) {
         return productRepository
-                .findAllByIsDeletedFalse()
+                .findAll(where(filterProduct(filter)))
                 .stream()
                 .map(this::toProductResponse)
                 .toList();
