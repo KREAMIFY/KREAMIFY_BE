@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -112,6 +113,34 @@ public class SellingService {
                         size)
 
                 .orElseThrow(() -> new NotFoundBidException(ErrorCode.NOT_FOUND_RESOURCE));
+    }
+
+    @Transactional
+    public void cancelSellingBid(Long bidId, Long userId) {
+        SellingBid sellingBid = sellingRepository
+                .findByIdAndUserAndStatus(
+                        bidId,
+                        userService.findActiveUser(userId),
+                        DealStatus.BIDDING.getStatus()
+                )
+                .orElseThrow(() -> new NotFoundBidException(ErrorCode.NOT_FOUND_RESOURCE));
+
+        sellingBid.changeStatus(DealStatus.BID_CANCELED);
+
+        //남아있는 판매 입찰 중 가장 낮은 가격의 입찰을 선택 후 업데이트
+        Optional<SellingBid> findSellingBid = sellingRepository
+                .findTopByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(
+                        sellingBid.getProduct(),
+                        sellingBid.getSize(),
+                        DealStatus.BIDDING.getStatus()
+                );
+
+        ProductOption productOption = productService.findProductOptionByProductIdAndSize(
+                sellingBid.getProduct().getId(),
+                sellingBid.getSize()
+        );
+
+        productOption.updateSellBidPrice(findSellingBid.map(SellingBid::getSuggestPrice).orElse(ZERO));
     }
 
     public boolean existsSameBid(Long productId, String size, Long userId) {

@@ -18,6 +18,12 @@ public interface SellingRepository extends JpaRepository<SellingBid, Long> {
     Optional<SellingBid> findByUserAndProductAndSize(User user, Product product, String size);
     List<SellingBid> findFirst2ByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(Product product, String size, String status);
 
+    Optional<SellingBid> findTopByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(
+            Product product,
+            String size,
+            String status
+    );
+
     List<SellingBid> findAllByUserAndStatus(User user, String status);
 
     List<SellingBid> findAllByUser(User user);
@@ -45,6 +51,6 @@ public interface SellingRepository extends JpaRepository<SellingBid, Long> {
     )
     List<BidDetail> findAllByProductAndSizeGroupBy(Long productId, String size);
 
-
+    Optional<SellingBid> findByIdAndUserAndStatus(Long bidId, User user, String status);
 
 }
