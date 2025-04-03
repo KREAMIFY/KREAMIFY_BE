@@ -143,11 +143,13 @@ public class SellingService {
         productOption.updateSellBidPrice(findSellingBid.map(SellingBid::getSuggestPrice).orElse(ZERO));
     }
 
-    public boolean existsSameBid(Long productId, String size, Long userId) {
-        return sellingRepository.existsByUserAndProductAndSize(
+    public boolean existsSameBid(Long productId, String size, Long userId, String status) {
+        return sellingRepository.existsByUserAndProductAndSizeAndStatus(
                 userService.findActiveUser(userId),
                 productService.findActiveProduct(productId),
-                size);
+                size,
+                status
+        );
     }
 
     private void updateLowestPrice(BidRequest bidRequest, ProductOption productOption) {
