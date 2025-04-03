@@ -1,11 +1,12 @@
 package com.kreamify.domain.deal.domain;
 
 
+import com.kreamify.domain.deal.dto.BidResponse;
+import com.kreamify.domain.deal.dto.BuyingBidResponse;
 import com.kreamify.domain.deal.model.DealStatus;
 import com.kreamify.domain.product.domain.Product;
 import com.kreamify.domain.user.domain.User;
 import com.kreamify.global.domain.BaseEntity;
-import com.kreamify.domain.deal.dto.BuyingBidResponse;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -65,6 +66,11 @@ public class BuyingBid extends BaseEntity {
         this.status = status.getStatus();
 
     }
+    public void update(int price, int deadline) {
+        this.suggestPrice = price;
+        this.deadline = deadline;
+    }
+
 
     public void cancel() {
         this.status = DealStatus.BID_CANCELED.getStatus();
@@ -72,6 +78,12 @@ public class BuyingBid extends BaseEntity {
 
     public String getConvertCreatedDate() {
         return getCreatedDate().format(DateTimeFormatter.ofPattern("yy/MM/dd"));
+    }
+
+    public String getExpiredDate() {
+        return getCreatedDate()
+                .plusDays(deadline)
+                .format(DateTimeFormatter.ofPattern("yy/MM/dd"));
     }
 
     public BuyingBidResponse toResponse() {
@@ -82,6 +94,13 @@ public class BuyingBid extends BaseEntity {
                 size,
                 suggestPrice,
                 status,
+                getExpiredDate()
+        );
+    }
+    public BidResponse toBidResponse() {
+        return new BidResponse(
+                suggestPrice,
+                deadline,
                 getConvertCreatedDate()
         );
     }
