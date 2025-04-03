@@ -36,7 +36,7 @@ public class SellingController {
 
     @Operation(summary = "즉시 판매 API",
             description = "특정 상품과 사이즈를 선택하여, 즉시 판매가로 상품을 즉시 판매합니다.")
-    @PostMapping
+    @PostMapping("/{id}")
     public ResponseEntity<ApiResponse<DealResponse>> straightSellProduct(
             @PathVariable Long id,
             @RequestParam String size,
