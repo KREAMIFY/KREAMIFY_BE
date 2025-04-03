@@ -1,5 +1,8 @@
 package com.kreamify.domain.deal.dto;
 
+import lombok.Getter;
+
+@Getter
 public class SellingBidResponse {
     private String image;
     private String name;
