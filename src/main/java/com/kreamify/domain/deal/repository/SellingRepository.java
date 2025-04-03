@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface SellingRepository extends JpaRepository<SellingBid, Long> {
 
 
-    boolean existsByUserAndProductAndSize(User user, Product product, String size);
+    boolean existsByUserAndProductAndSizeAndStatus(User user, Product product, String size, String status);
 
     Optional<SellingBid> findByUserAndProductAndSize(User user, Product product, String size);
     List<SellingBid> findFirst2ByProductAndSizeAndStatusOrderBySuggestPriceAscCreatedDateAsc(Product product, String size, String status);
