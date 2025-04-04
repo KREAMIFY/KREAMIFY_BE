@@ -39,14 +39,22 @@ public class BuyingService {
 
     @Transactional
     public BidResponse registerBuyingBid(Long id, String size, BidRequest bidRequest) {
+        User user = userService.findActiveUser(bidRequest.userId());
         ProductOption productOption = productService.findProductOptionByProductIdAndSize(id, size);
 
-        if (productOption.getHighestPrice() < bidRequest.price()) {
-            productOption.updateSellBidPrice(bidRequest.price());
+        Optional<BuyingBid> existingBid = buyingRepository
+                .findByProductAndSizeAndStatusAndUser(
+                        productOption.getProduct(),
+                        size,
+                        DealStatus.BIDDING.getStatus(),
+                        user
+                );
+        if (existingBid.isPresent()) {
+            return updateExistingBuyingBid(existingBid.get(), size, bidRequest, productOption);
         }
 
-        User user = userService.findActiveUser(bidRequest.userId());
-        BuyingBid buyingBid = buyingRepository.save(
+        updateHighestPrice(bidRequest.price(), productOption);
+        BuyingBid newBuyingBid = buyingRepository.save(
                 BuyingBid
                         .builder()
                         .user(user)
@@ -56,14 +64,8 @@ public class BuyingService {
                         .deadline(bidRequest.deadline())
                         .build()
         );
-
-        String expiredDate = buyingBid
-                .getCreatedDate()
-                .plusDays(buyingBid.getDeadline())
-                .format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-        return new BidResponse(buyingBid.getSuggestPrice(), buyingBid.getDeadline(), expiredDate);
+        return newBuyingBid.toBidResponse();
     }
-
     //즉시 구매 요청
     @Transactional
     public DealResponse straightBuyProduct(Long productId, String size, BuyRequest buyRequest) {
@@ -162,6 +164,32 @@ public class BuyingService {
         productOption.updateBuyBidPrice(
                 topPriceBid.map(BuyingBid::getSuggestPrice).orElse(VALUE_ZERO)
         );
+    }
+
+    private BidResponse updateExistingBuyingBid(
+            BuyingBid buyingBid,
+            String size,
+            BidRequest bidRequest,
+            ProductOption productOption
+    ) {
+        buyingBid.update(bidRequest.price(), bidRequest.deadline());
+        buyingRepository
+                .findFirstByProductAndSizeAndStatusOrderBySuggestPriceDesc(
+                        buyingBid.getProduct(),
+                        size,
+                        DealStatus.BIDDING.getStatus()
+                )
+                .ifPresent(
+                        topPriceBid -> productOption.updateBuyBidPrice(
+                                topPriceBid.getSuggestPrice())
+                );
+        return buyingBid.toBidResponse();
+    }
+
+    private void updateHighestPrice(int price, ProductOption productOption) {
+        if (productOption.getHighestPrice() < price) {
+            productOption.updateBuyBidPrice(price);
+        }
     }
 
 }
