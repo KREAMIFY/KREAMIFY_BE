@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public interface DealRepository extends JpaRepository<Deal, Long> {
 
-    Optional<Deal> findFirstByProductOrderByCreatedDateDesc(Product product);
-    Optional<Deal> findFirstByProductAndSizeOrderByCreatedDateDesc(Product product, String size);
+    Optional<Deal> findFirstByProductAndIsFinishedTrueOrderByCreatedDateDesc(Product product);
+    Optional<Deal> findFirstByProductAndSizeAndIsFinishedTrueOrderByCreatedDateDesc(Product product, String size);
 
-    List<Deal> findAllByProductOrderByCreatedDateDesc(Product product);
-    List<Deal> findAllByProductAndSizeOrderByCreatedDateDesc(Product product, String size);
+    List<Deal> findAllByProductAndIsFinishedTrueOrderByCreatedDateDesc(Product product);
+    List<Deal> findAllByProductAndSizeAndIsFinishedTrueOrderByCreatedDateDesc(Product product, String size);
 
 
     List<Deal> findAllBySellerAndSellingStatusAndIsFinishedFalse(User user, String status);
